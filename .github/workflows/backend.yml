@@ -17,11 +17,22 @@ jobs:
       - name: Validate Flyway migration versions
         run: |
           python3 - <<'PY'
+          from collections import defaultdict
           from pathlib import Path
-          files=list(Path('backend/src/main/resources/db/migration').glob('V*__*.sql'))
-          versions=[p.name.split('__',1)[0] for p in files]
-          dup=sorted({v for v in versions if versions.count(v)>1})
-          assert not dup, f'duplicate root Flyway versions: {dup}'
+          import re
+
+          root = Path('backend/src/main/resources/db/migration')
+          versioned = defaultdict(list)
+          pattern = re.compile(r'^V([0-9]+(?:[._][0-9]+)*)__.+\.sql$')
+
+          for migration in root.rglob('*.sql'):
+              match = pattern.match(migration.name)
+              if match:
+                  versioned[match.group(1).replace('_', '.')].append(str(migration))
+
+          duplicates = {version: paths for version, paths in versioned.items() if len(paths) > 1}
+          assert not duplicates, f'duplicate Flyway versions: {duplicates}'
+          print(f'Validated {sum(len(paths) for paths in versioned.values())} versioned Flyway migrations')
           PY
       - name: Compile
         run: mvn -B -f backend/pom.xml -DskipTests compile
