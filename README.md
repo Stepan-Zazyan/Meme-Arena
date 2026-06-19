@@ -1,33 +1,32 @@
 # Meme Arena
 
-## Запуск в IntelliJ IDEA
+Meme Arena backend is a Spring Boot modular monolith. The current MVP core implements guest profiles, meme storage by external `imageUrl`, battles, voting with Elo recalculation, and meme leaderboards.
 
-1. Откройте корневой каталог репозитория как проект.
-2. Дождитесь импорта Maven-проекта `backend/pom.xml` и убедитесь, что Project SDK установлен в Java 21.
-3. В списке Run Configurations выберите **Meme Arena PostgreSQL** и запустите её. Конфигурация поднимает только PostgreSQL 17 на локальном порту `5433` и хранит данные в Docker volume.
-4. После готовности PostgreSQL выберите **Meme Arena Backend** и запустите её. Конфигурация включает профиль `local`; backend будет доступен на `http://localhost:8080`.
+## Implemented MVP core
 
-Значения в shared-конфигурациях предназначены только для локальной разработки. Их можно переопределить переменными окружения; реальные секреты в репозиторий добавлять нельзя.
+* Guest user creation and profile lookup under `/api/v1/users`.
+* Meme creation and lookup under `/api/v1/memes`; user-submitted memes start as `PENDING`.
+* Next battle selection under `/api/v1/battles/next` from `APPROVED` memes only.
+* Voting under `/api/v1/votes`, including duplicate-pair protection and Elo updates in one transaction.
+* Top memes under `/api/v1/memes/top` for `DAY`, `WEEK`, and `ALL_TIME`.
+* Local-only moderation endpoints under `/api/v1/local/memes/{memeId}/approve` and `/reject` when the `local` profile is active.
 
-## Тесты в IntelliJ IDEA
+Physical image upload/storage and the Android/Flutter client are not implemented yet. Memes store only external HTTP/HTTPS image URLs at this stage.
 
-Запустите shared Run Configuration **Meme Arena Tests**. Тесты самостоятельно поднимают PostgreSQL 17 через Testcontainers, применяют Flyway-миграции и не используют локальную базу. Для запуска необходим работающий Docker.
+## Manual check in IntelliJ IDEA and Postman
 
-## Проверка через Postman
+1. Start PostgreSQL using the existing shared IntelliJ Run Configuration.
+2. Start the backend using the existing shared IntelliJ Run Configuration with the `local` profile.
+3. Import or refresh `postman/Meme Arena.postman_collection.json` and `postman/Local.postman_environment.json` in Postman.
+4. Run `Core MVP / Create Guest User`; it saves `userId` to the environment.
+5. Run `Core MVP / Get Next Battle`; local Flyway seed data provides approved demo memes and the request saves `leftMemeId`, `rightMemeId`, and `winnerMemeId`.
+6. Run `Core MVP / Submit Vote`.
+7. Run `Core MVP / Get User Profile` and verify `votesCount` changed.
+8. Run `Core MVP / Get Top DAY`, `Get Top WEEK`, or `Get Top ALL_TIME`.
+9. Run `Core MVP / Create Meme`; the response is `PENDING` and saves `createdMemeId`.
+10. Run `Core MVP / Approve Meme — local only`.
+11. Request future battles and verify the approved meme is eligible.
 
-1. Импортируйте `postman/Meme Arena.postman_collection.json`.
-2. Импортируйте `postman/Local.postman_environment.json` и выберите окружение **Local**.
-3. Запустите PostgreSQL и backend через shared Run Configurations.
-4. Выполните запрос **Health** в коллекции. Postman проверит HTTP 200, поля ответа и заголовок `X-Request-Id`.
+## API docs
 
-Swagger UI доступен по `/swagger-ui.html`, OpenAPI JSON — по `/v3/api-docs`, Actuator health и info — по `/actuator/health` и `/actuator/info`.
-
-## Структура
-
-- `backend/` — Spring Boot 3.5 backend на Java 21, конфигурации, Flyway и интеграционные тесты.
-- `.run/` — shared Run Configurations для PostgreSQL, backend и тестов.
-- `postman/` — локальное окружение и health-коллекция.
-- `docker-compose.yml` — только PostgreSQL 17 для локальной разработки.
-- `.env.example` — перечень поддерживаемых переменных окружения с безопасными локальными значениями.
-
-На текущем этапе реализован только backend foundation. Мемы, пользователи, голосование, рейтинги, загрузка файлов, мобильное приложение и прочая бизнес-функциональность отсутствуют.
+OpenAPI is available from the running backend at `/v3/api-docs` and Swagger UI at `/swagger-ui.html`.

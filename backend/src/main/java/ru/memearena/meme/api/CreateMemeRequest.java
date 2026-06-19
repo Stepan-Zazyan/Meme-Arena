@@ -1,0 +1,1 @@
+package ru.memearena.meme.api; import jakarta.validation.constraints.*; import java.util.UUID; public record CreateMemeRequest(@NotNull UUID uploaderId,@NotBlank @Size(max=120) String title,@NotBlank @Size(max=2000) String imageUrl,@Size(max=2000) String sourceUrl){}

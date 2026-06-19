@@ -1,6 +1,7 @@
 package ru.memearena.error;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,7 +27,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({MissingServletRequestParameterException.class, MethodArgumentTypeMismatchException.class})
     ResponseEntity<ApiError> badRequest(Exception ex, HttpServletRequest request) {
-        return response(HttpStatus.BAD_REQUEST, "BAD_REQUEST", ex.getMessage(), request, List.of());
+        return response(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", ex.getMessage(), request, List.of());
+    }
+
+    @ExceptionHandler(ApiException.class)
+    ResponseEntity<ApiError> api(ApiException ex, HttpServletRequest request) {
+        return response(ex.status(), ex.code().name(), ex.getMessage(), request, List.of());
+    }
+
+    @ExceptionHandler(Exception.class)
+    ResponseEntity<ApiError> internal(Exception ex, HttpServletRequest request) {
+        return response(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "Internal server error", request, List.of());
     }
 
     private ResponseEntity<ApiError> response(HttpStatus status, String code, String message,
