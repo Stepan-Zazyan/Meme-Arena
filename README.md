@@ -51,3 +51,13 @@ Manual Postman scenario:
 8. Run **Ranking / Get Top Memes**.
 
 The command line is not required for the normal user path; it is only used by automation and CI.
+
+## Android MVP
+
+Open the monorepo root in IntelliJ IDEA or Android Studio so the shared `.run` configurations are visible. Use **Meme Arena Infrastructure** to start PostgreSQL and MinIO, then **Meme Arena Backend** to run Spring Boot with the local profile. Pick an Android emulator in the device selector and run **Meme Arena Mobile**; it passes `--dart-define=API_BASE_URL=http://10.0.2.2:8080` for emulator access to the host backend.
+
+For a physical Android device, keep the backend running on the development computer and change `API_BASE_URL` in the run configuration to `http://<computer-lan-ip>:8080`. Debug builds allow local cleartext HTTP; release builds do not.
+
+User scenario: create a nickname on onboarding, vote on the funnier meme in **Битва**, open **Топ** and switch День/Неделя/Всё время, choose an image in **Загрузить** and submit it for moderation, then check nickname, votes, submitted memes and status in **Профиль**.
+
+Run backend tests with **Meme Arena Backend Tests** and Flutter tests with **Meme Arena Flutter Tests** from the IDE. Current Android MVP intentionally excludes iOS polishing, web, email/password login, OAuth, push notifications, comments, subscriptions, payments, analytics, admin UI and AI features.
