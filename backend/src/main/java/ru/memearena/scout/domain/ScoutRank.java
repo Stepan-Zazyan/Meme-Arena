@@ -1,0 +1,1 @@
+package ru.memearena.scout.domain; public enum ScoutRank { OBSERVER,SCOUT,TREND_HUNTER,MEME_ORACLE; public static ScoutRank fromPoints(long p){ if(p>=1500)return MEME_ORACLE; if(p>=500)return TREND_HUNTER; if(p>=100)return SCOUT; return OBSERVER; } }

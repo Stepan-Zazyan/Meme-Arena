@@ -5,3 +5,7 @@ spring:
     password: ${POSTGRES_PASSWORD:meme_arena_local}
   flyway:
     locations: classpath:db/migration,classpath:db/migration/local
+app:
+  scout:
+    resolver:
+      enabled: false

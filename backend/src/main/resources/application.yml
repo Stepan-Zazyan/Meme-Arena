@@ -46,3 +46,15 @@ app:
   ip-hash-pepper: ${APP_IP_HASH_PEPPER:local-dev-pepper-change-me}
   proxy:
     trust-forwarded-headers: false
+  scout:
+    early-window-hours: 24
+    max-early-battles: 30
+    resolution-delay-hours: 72
+    minimum-battles-for-resolution: 20
+    success-percentile: 0.25
+    expiration-hours: 168
+    fallback-win-rate: 0.60
+    fallback-rating: 1532
+    resolver:
+      enabled: true
+      fixed-delay: PT30M
