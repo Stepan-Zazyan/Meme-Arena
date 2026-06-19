@@ -1,11 +1,449 @@
 {
-  "info": {"name": "Meme Arena", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"},
-  "item": [{"name": "Health", "request": {"method": "GET", "header": [], "url": {"raw": "{{baseUrl}}/api/v1/health", "host": ["{{baseUrl}}"], "path": ["api", "v1", "health"]}},
-    "event": [{"listen": "test", "script": {"exec": [
-      "pm.test('HTTP status is 200', () => pm.response.to.have.status(200));",
-      "pm.test('status is UP', () => pm.expect(pm.response.json().status).to.eql('UP'));",
-      "pm.test('service is meme-arena-backend', () => pm.expect(pm.response.json().service).to.eql('meme-arena-backend'));",
-      "pm.test('timestamp is present', () => pm.expect(pm.response.json().timestamp).to.be.ok);",
-      "pm.test('X-Request-Id is present', () => pm.expect(pm.response.headers.has('X-Request-Id')).to.be.true);"
-    ]}}]}]
+  "info": {
+    "name": "Meme Arena",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "health"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('HTTP status is 200', () => pm.response.to.have.status(200));",
+              "pm.test('status is UP', () => pm.expect(pm.response.json().status).to.eql('UP'));",
+              "pm.test('service is meme-arena-backend', () => pm.expect(pm.response.json().service).to.eql('meme-arena-backend'));",
+              "pm.test('timestamp is present', () => pm.expect(pm.response.json().timestamp).to.be.ok);",
+              "pm.test('X-Request-Id is present', () => pm.expect(pm.response.headers.has('X-Request-Id')).to.be.true);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Core MVP",
+      "item": [
+        {
+          "name": "Create Guest User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/guest",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "guest"
+              ],
+              "query": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nickname\":\"Postman_{{$randomInt}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201',()=>pm.response.to.have.status(201)); const j=pm.response.json(); pm.expect(j.id).to.exist; pm.environment.set('userId',j.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "{{userId}}"
+              ],
+              "query": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200)); pm.expect(pm.response.json().id).to.eql(pm.environment.get('userId'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Meme",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/memes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "memes"
+              ],
+              "query": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"uploaderId\":\"{{userId}}\",\"title\":\"Postman meme\",\"imageUrl\":\"https://picsum.photos/seed/postman-meme/800/600\",\"sourceUrl\":\"https://example.com/original\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201',()=>pm.response.to.have.status(201)); const j=pm.response.json(); pm.expect(j.moderationStatus).to.eql('PENDING'); pm.environment.set('createdMemeId',j.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Approve Meme — local only",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/local/memes/{{createdMemeId}}/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "local",
+                "memes",
+                "{{createdMemeId}}",
+                "approve"
+              ],
+              "query": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200)); pm.expect(pm.response.json().moderationStatus).to.eql('APPROVED');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Meme",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/memes/{{createdMemeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "memes",
+                "{{createdMemeId}}"
+              ],
+              "query": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200)); pm.expect(pm.response.json().id).to.eql(pm.environment.get('createdMemeId'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Next Battle",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/battles/next?userId={{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "battles",
+                "next"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 or 204',()=>pm.expect(pm.response.code).to.be.oneOf([200,204])); if(pm.response.code===200){const j=pm.response.json(); pm.environment.set('leftMemeId',j.left.id); pm.environment.set('rightMemeId',j.right.id); pm.environment.set('winnerMemeId',j.left.id);}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Submit Vote",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/votes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "votes"
+              ],
+              "query": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"userId\":\"{{userId}}\",\"leftMemeId\":\"{{leftMemeId}}\",\"rightMemeId\":\"{{rightMemeId}}\",\"winnerMemeId\":\"{{winnerMemeId}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201',()=>pm.response.to.have.status(201)); pm.expect(pm.response.json().voteId).to.exist;"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Top DAY",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/memes/top?period=DAY&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "memes",
+                "top"
+              ],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "DAY"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200)); pm.expect(pm.response.json().period).to.eql('DAY');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Top WEEK",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/memes/top?period=WEEK&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "memes",
+                "top"
+              ],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "WEEK"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200)); pm.expect(pm.response.json().period).to.eql('WEEK');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Top ALL_TIME",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/memes/top?period=ALL_TIME&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "memes",
+                "top"
+              ],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "ALL_TIME"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200)); pm.expect(pm.response.json().period).to.eql('ALL_TIME');"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

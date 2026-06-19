@@ -1,0 +1,1 @@
+package ru.memearena.ranking.api; import java.util.UUID; public record TopMemeItemResponse(int position,UUID memeId,String title,String imageUrl,int rating,long wins,long losses,long battlesCount,Long periodWins,Long periodLosses,Long periodBattles,Double periodWinRate,double rankingScore){}

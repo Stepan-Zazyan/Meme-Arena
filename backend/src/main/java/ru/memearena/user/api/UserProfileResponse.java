@@ -1,0 +1,2 @@
+package ru.memearena.user.api;
+import ru.memearena.user.domain.*; import java.time.Instant; import java.util.UUID; public record UserProfileResponse(UUID id,String nickname,long votesCount,long submittedMemesCount,UserStatus status,Instant createdAt){ public static UserProfileResponse from(UserProfile u){return new UserProfileResponse(u.getId(),u.getNickname(),u.getVotesCount(),u.getSubmittedMemesCount(),u.status(),u.getCreatedAt());}}

@@ -1,0 +1,1 @@
+package ru.memearena.ranking.domain; public final class WilsonScoreCalculator { private static final double Z=1.96; private WilsonScoreCalculator(){} public static double lowerBound(long wins,long losses){ long n=wins+losses; if(n==0)return 0; double p=(double)wins/n; double z2=Z*Z; return (p+z2/(2*n)-Z*Math.sqrt((p*(1-p)+z2/(4*n))/n))/(1+z2/n); } }

@@ -1,0 +1,1 @@
+package ru.memearena.vote.api; import ru.memearena.user.domain.UserStatus; import java.util.UUID; public record SubmitVoteResponse(UUID voteId,VoteRatingChangeResponse winner,VoteRatingChangeResponse loser,long userVotesCount,UserStatus userStatus){}
