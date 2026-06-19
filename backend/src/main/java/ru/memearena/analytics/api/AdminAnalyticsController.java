@@ -1,0 +1,3 @@
+package ru.memearena.analytics.api;
+import org.springframework.format.annotation.DateTimeFormat; import org.springframework.web.bind.annotation.*; import ru.memearena.analytics.application.ProductAnalyticsService; import java.time.*;
+@RestController @RequestMapping("/api/v1/admin/analytics") public class AdminAnalyticsController { private final ProductAnalyticsService service; public AdminAnalyticsController(ProductAnalyticsService service){this.service=service;} @GetMapping("/summary") public AnalyticsSummaryResponse summary(@RequestParam @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME) Instant from,@RequestParam @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME) Instant to){return service.summary(from,to);} }

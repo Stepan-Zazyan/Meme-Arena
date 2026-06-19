@@ -105,3 +105,39 @@ flutter run --dart-define=API_BASE_URL=http://<YOUR_LAN_IP>:8080
 * No auth, push notifications, comments, tournaments, scouts UI, payments, ads, Firebase, Supabase, WebView, Bloc, Redux, or GetX.
 * Upload depends on backend media endpoint and environment storage configuration; the app keeps an `imageUrl` fallback form for local MVP use.
 * Image selection is gallery-only via Android Photo Picker / platform picker.
+
+## Release Candidate notes
+
+### Product analytics
+
+The backend exposes first-party, privacy-minimal product analytics for the closed-test RC:
+
+- `POST /api/v1/product-events` requires a normal user bearer token and accepts only allowlisted event types (`APP_OPENED`, `ONBOARDING_COMPLETED`, `BATTLE_OPENED`, `VOTE_COMPLETED`, `TOP_OPENED`, `MEME_UPLOAD_COMPLETED`, `PROFILE_OPENED`, `SCOUT_PREDICTIONS_OPENED`, `TOURNAMENT_OPENED`, `TOURNAMENT_VOTE_COMPLETED`).
+- `GET /api/v1/admin/analytics/summary?from=...&to=...` requires the admin bearer token and returns high-level counters only.
+- The `product_event` table intentionally stores no arbitrary payload, meme text, IP address, raw access token, or personal data.
+
+### Production backend profile
+
+Run production with `SPRING_PROFILES_ACTIVE=prod`. The profile requires secrets and connection settings through environment variables and does not enable local Flyway seed data:
+
+- `DATABASE_URL`, `DATABASE_USERNAME`, `DATABASE_PASSWORD`
+- `MINIO_ENDPOINT`, `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY`, `MINIO_BUCKET`
+- `MEME_ARENA_ADMIN_TOKEN`
+- `APP_IP_HASH_PEPPER`
+
+Swagger UI and OpenAPI are disabled in `prod` by default. Enable only intentionally with `SWAGGER_UI_ENABLED=true` / `OPENAPI_ENABLED=true` behind private access.
+
+### Android release configuration
+
+The Android app uses `applicationId` `ru.memearena.app`, app name `Meme Arena`, version `0.1.0` / code `1`. Debug builds may use cleartext HTTP for emulator access. Release builds must provide an HTTPS API URL and must not point to `localhost` or `10.0.2.2`:
+
+```bash
+cd mobile
+flutter build apk --release --dart-define=API_BASE_URL=https://api.example.com
+```
+
+Signing is configured by the standard Flutter/Android Gradle mechanism. Create a local keystore and `key.properties` outside version control, then wire it in local Gradle settings before producing a distributable APK/AAB. Do not commit keystores, passwords, production API secrets, or admin tokens.
+
+### RC smoke flow
+
+The Postman collection contains the `RC Smoke Flow` folder. Configure environment variables such as `baseUrl`, `accessToken`, and an admin token in your local Postman environment; never commit a real admin token.

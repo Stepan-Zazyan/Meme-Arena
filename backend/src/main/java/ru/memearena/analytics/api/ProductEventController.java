@@ -1,0 +1,3 @@
+package ru.memearena.analytics.api;
+import jakarta.validation.Valid; import org.springframework.http.*; import org.springframework.web.bind.annotation.*; import ru.memearena.analytics.application.ProductAnalyticsService; import ru.memearena.security.CurrentUser;
+@RestController @RequestMapping("/api/v1/product-events") public class ProductEventController { private final ProductAnalyticsService service; public ProductEventController(ProductAnalyticsService service){this.service=service;} @PostMapping public ResponseEntity<Void> create(@Valid @RequestBody ProductEventRequest request){var user=CurrentUser.required(); service.ingest(user.userId(),user.sessionId(),request); return ResponseEntity.status(HttpStatus.ACCEPTED).build();} }
