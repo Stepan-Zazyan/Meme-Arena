@@ -3,3 +3,7 @@ spring:
     show-sql: false
   flyway:
     locations: classpath:db/migration,classpath:db/migration/local
+app:
+  scout:
+    resolver:
+      enabled: false

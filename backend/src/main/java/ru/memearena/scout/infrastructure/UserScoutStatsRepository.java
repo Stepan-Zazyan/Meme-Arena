@@ -1,0 +1,1 @@
+package ru.memearena.scout.infrastructure; import org.springframework.data.jpa.repository.*; import ru.memearena.scout.domain.*; import java.util.*; public interface UserScoutStatsRepository extends JpaRepository<UserScoutStats,UUID>{ }

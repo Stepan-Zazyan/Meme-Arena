@@ -76,3 +76,13 @@ Import `postman/Meme Arena.postman_collection.json` and `postman/Local.postman_e
 To test security manually: create a guest, call `/api/v1/users/me`, logout through the profile screen or `POST /api/v1/users/me/logout`, then verify the same token receives 401. Calling protected endpoints without a bearer token should return 401. Moderation is available only under `/api/v1/admin/moderation/memes` with the admin bearer token.
 
 The rate limiter is in-memory and suitable only for one backend instance.
+
+## Мемный скаут
+
+Мемный скаут — репутационная механика, где пользователь получает очки не за массу кликов, а за раннее распознавание мемов, которые позже становятся сильными. При обычном голосовании backend может сохранить `PENDING`-прогноз на выбранный мем, если мем находится в раннем окне после approve и ещё имеет мало битв.
+
+Очки начисляются позже resolver-ом: мем должен накопить достаточно битв и пройти задержку оценки. Успех определяется внутри UTC cohort по Wilson score; для маленьких cohort используется fallback. Local/admin может запустить `POST /api/v1/admin/scout/resolve`; для ручной проверки в local есть `POST /api/v1/admin/local/scout/memes/{memeId}/make-resolvable`.
+
+В Android после раннего голоса показывается «Прогноз сохранён». В профиле отображаются rank, scout points, accuracy, серии, достижения и экран «Мои прогнозы». В Top доступны вкладки «Мемы» и «Скауты» с периодами Неделя/Всё время.
+
+Ограничения MVP: нет турниров, комментариев, push/WebSocket и распределённого scheduler lock; при нескольких backend-инстансах нужно добавить distributed lock.
