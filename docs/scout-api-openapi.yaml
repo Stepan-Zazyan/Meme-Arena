@@ -1,0 +1,54 @@
+openapi: 3.0.3
+info:
+  title: Meme Arena Scout API
+  version: 0.1.0
+paths:
+  /api/v1/users/me:
+    get:
+      summary: Get authenticated user profile with scout stats and achievements
+  /api/v1/users/me/predictions:
+    get:
+      summary: List authenticated user's meme predictions
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [PENDING, SUCCESS, FAILED, EXPIRED] }
+        - name: page
+          in: query
+          schema: { type: integer, minimum: 0, default: 0 }
+        - name: size
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+  /api/v1/users/leaderboard:
+    get:
+      summary: Scout leaderboard
+      parameters:
+        - name: period
+          in: query
+          schema: { type: string, enum: [WEEK, ALL_TIME], default: ALL_TIME }
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 100, default: 50 }
+  /api/v1/votes:
+    post:
+      summary: Submit vote and return optional prediction creation info
+components:
+  schemas:
+    ScoutStats:
+      type: object
+      properties:
+        points: { type: integer }
+        rank: { type: string, enum: [OBSERVER, SCOUT, TREND_HUNTER, MEME_ORACLE] }
+        predictionsCount: { type: integer }
+        successfulPredictions: { type: integer }
+        failedPredictions: { type: integer }
+        expiredPredictions: { type: integer }
+        accuracy: { type: number, nullable: true }
+        currentSuccessStreak: { type: integer }
+        bestSuccessStreak: { type: integer }
+    VotePrediction:
+      type: object
+      properties:
+        created: { type: boolean }
+        predictionId: { type: string, format: uuid, nullable: true }
+        message: { type: string, nullable: true, example: Прогноз сохранён }

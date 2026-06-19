@@ -1,11 +1,172 @@
 {
-  "info": {"name": "Meme Arena Core MVP", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"},
+  "info": {
+    "name": "Meme Arena Core MVP",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
   "item": [
-    {"name":"Create Guest User","request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"url":"{{baseUrl}}/api/v1/users/guest","body":{"mode":"raw","raw":"{\"nickname\":\"Stepan{{$timestamp}}\"}"}},"event":[{"listen":"test","script":{"exec":["const json = pm.response.json();","pm.environment.set('userId', json.id);"]}}]},
-    {"name":"Create Meme","request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"url":"{{baseUrl}}/api/v1/memes","body":{"mode":"raw","raw":"{\"uploaderId\":\"{{userId}}\",\"title\":\"Postman meme\",\"imageUrl\":\"https://picsum.photos/seed/postman-meme/800/600\",\"sourceUrl\":null}"}},"event":[{"listen":"test","script":{"exec":["const json = pm.response.json();","pm.environment.set('memeId', json.id);"]}}]},
-    {"name":"Approve Meme","request":{"method":"POST","url":"{{baseUrl}}/api/v1/local/memes/{{memeId}}/approve"}},
-    {"name":"Get Next Battle","request":{"method":"GET","url":"{{baseUrl}}/api/v1/battles/next?userId={{userId}}"},"event":[{"listen":"test","script":{"exec":["if (pm.response.code === 200) {","  const json = pm.response.json();","  pm.environment.set('leftMemeId', json.left.id);","  pm.environment.set('rightMemeId', json.right.id);","}"]}}]},
-    {"name":"Submit Vote","request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"url":"{{baseUrl}}/api/v1/votes","body":{"mode":"raw","raw":"{\"userId\":\"{{userId}}\",\"leftMemeId\":\"{{leftMemeId}}\",\"rightMemeId\":\"{{rightMemeId}}\",\"winnerMemeId\":\"{{leftMemeId}}\"}"}}},
-    {"name":"Get Top","request":{"method":"GET","url":"{{baseUrl}}/api/v1/memes/top?period=ALL_TIME&limit=20"}}
+    {
+      "name": "Create Guest User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/users/guest",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"nickname\":\"Stepan{{$timestamp}}\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.environment.set('userId', json.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create Meme",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/memes",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"uploaderId\":\"{{userId}}\",\"title\":\"Postman meme\",\"imageUrl\":\"https://picsum.photos/seed/postman-meme/800/600\",\"sourceUrl\":null}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.environment.set('memeId', json.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Approve Meme",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/v1/local/memes/{{memeId}}/approve"
+      }
+    },
+    {
+      "name": "Get Next Battle",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/battles/next?userId={{userId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  const json = pm.response.json();",
+              "  pm.environment.set('leftMemeId', json.left.id);",
+              "  pm.environment.set('rightMemeId', json.right.id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Submit Vote",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/votes",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"userId\":\"{{userId}}\",\"leftMemeId\":\"{{leftMemeId}}\",\"rightMemeId\":\"{{rightMemeId}}\",\"winnerMemeId\":\"{{leftMemeId}}\"}"
+        }
+      }
+    },
+    {
+      "name": "Get Top",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/memes/top?period=ALL_TIME&limit=20"
+      }
+    },
+    {
+      "name": "Get Pending Predictions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/users/me/predictions?status=PENDING&page=0&size=20"
+      }
+    },
+    {
+      "name": "Get Successful Predictions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/users/me/predictions?status=SUCCESS&page=0&size=20"
+      }
+    },
+    {
+      "name": "Get Failed Predictions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/users/me/predictions?status=FAILED&page=0&size=20"
+      }
+    },
+    {
+      "name": "Get Expired Predictions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/users/me/predictions?status=EXPIRED&page=0&size=20"
+      }
+    },
+    {
+      "name": "Get My Profile",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/users/me"
+      }
+    },
+    {
+      "name": "Get Scout Leaderboard WEEK",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/users/leaderboard?period=WEEK&limit=50"
+      }
+    },
+    {
+      "name": "Get Scout Leaderboard ALL_TIME",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/users/leaderboard?period=ALL_TIME&limit=50"
+      }
+    }
   ]
 }
