@@ -1,0 +1,1 @@
+package ru.memearena.tournament.infrastructure; import org.springframework.data.jpa.repository.*; import ru.memearena.tournament.domain.*; import java.util.*; public interface MemeTournamentStatsRepository extends JpaRepository<MemeTournamentStats,UUID>{}
