@@ -61,3 +61,18 @@ For a physical Android device, keep the backend running on the development compu
 User scenario: create a nickname on onboarding, vote on the funnier meme in **Битва**, open **Топ** and switch День/Неделя/Всё время, choose an image in **Загрузить** and submit it for moderation, then check nickname, votes, submitted memes and status in **Профиль**.
 
 Run backend tests with **Meme Arena Backend Tests** and Flutter tests with **Meme Arena Flutter Tests** from the IDE. Current Android MVP intentionally excludes iOS polishing, web, email/password login, OAuth, push notifications, comments, subscriptions, payments, analytics, admin UI and AI features.
+
+## Secure guest sessions and moderation
+
+Set local backend environment variables in the shared IDEA run configuration or your shell:
+
+* `MEME_ARENA_ADMIN_TOKEN` — local-only admin bearer token placeholder;
+* `APP_IP_HASH_PEPPER` — local-only pepper for IP hashing.
+
+Do not commit production secrets. Android creates a guest profile through onboarding, generates and keeps a stable random installationId, stores only the access token in platform secure storage, and stores non-secret `userId`, `nickname`, and `installationId` in SharedPreferences.
+
+Import `postman/Meme Arena.postman_collection.json` and `postman/Local.postman_environment.json`, then fill `adminToken` manually. Protected user requests use `accessToken`; admin moderation requests use `adminToken`.
+
+To test security manually: create a guest, call `/api/v1/users/me`, logout through the profile screen or `POST /api/v1/users/me/logout`, then verify the same token receives 401. Calling protected endpoints without a bearer token should return 401. Moderation is available only under `/api/v1/admin/moderation/memes` with the admin bearer token.
+
+The rate limiter is in-memory and suitable only for one backend instance.

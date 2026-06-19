@@ -1,0 +1,1 @@
+package ru.memearena.user.application; import ru.memearena.user.domain.UserProfile; import java.time.Instant; public record GuestCreationResult(UserProfile user,String accessToken,Instant expiresAt) {}

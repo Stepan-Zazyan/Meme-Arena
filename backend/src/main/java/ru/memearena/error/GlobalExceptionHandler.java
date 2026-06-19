@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import ru.memearena.ratelimit.RateLimitExceededException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,6 +29,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({MissingServletRequestParameterException.class, MethodArgumentTypeMismatchException.class})
     ResponseEntity<ApiError> badRequest(Exception ex, HttpServletRequest request) {
         return response(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", ex.getMessage(), request, List.of());
+    }
+
+    @ExceptionHandler(RateLimitExceededException.class)
+    ResponseEntity<ApiError> rate(RateLimitExceededException ex, HttpServletRequest request) {
+        return ResponseEntity.status(ex.status()).header("Retry-After", String.valueOf(ex.retryAfterSeconds())).body(new ApiError(ex.code().name(), ex.getMessage(), Instant.now(clock), request.getRequestURI(), List.of()));
     }
 
     @ExceptionHandler(ApiException.class)

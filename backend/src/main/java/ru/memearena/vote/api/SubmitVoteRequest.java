@@ -1,1 +1,1 @@
-package ru.memearena.vote.api; import jakarta.validation.constraints.NotNull; import java.util.UUID; public record SubmitVoteRequest(@NotNull UUID userId,@NotNull UUID leftMemeId,@NotNull UUID rightMemeId,@NotNull UUID winnerMemeId){}
+package ru.memearena.vote.api; import jakarta.validation.constraints.NotNull; import java.util.UUID; public record SubmitVoteRequest(@Deprecated UUID userId,@NotNull UUID leftMemeId,@NotNull UUID rightMemeId,@NotNull UUID winnerMemeId){}
