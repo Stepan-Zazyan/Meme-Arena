@@ -167,6 +167,454 @@
         "header": [],
         "url": "{{baseUrl}}/api/v1/users/leaderboard?period=ALL_TIME&limit=50"
       }
+    },
+    {
+      "name": "RC Smoke Flow",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "health"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"healthy\",()=>pm.response.code===200);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Guest",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/guest",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "guest"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nickname\": \"rc_{{$randomInt}}\", \"installationId\": \"{{$guid}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"created\",()=>pm.response.code===201);",
+                  "pm.environment.set(\"accessToken\", pm.response.json().accessToken);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/media/images",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "media",
+                "images"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Meme",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/memes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "memes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\": \"RC smoke meme\", \"imageUrl\": \"https://example.com/meme.png\"}"
+            }
+          }
+        },
+        {
+          "name": "Admin Get Pending",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/memes/pending",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "memes",
+                "pending"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Admin Approve",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/memes/{{memeId}}/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "memes",
+                "{{memeId}}",
+                "approve"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Battle",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/battles/next",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "battles",
+                "next"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Submit Vote",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/votes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "votes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"leftMemeId\": \"{{leftMemeId}}\", \"rightMemeId\": \"{{rightMemeId}}\", \"winnerMemeId\": \"{{leftMemeId}}\"}"
+            }
+          }
+        },
+        {
+          "name": "Get Meme Top",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/memes/top?period=ALL_TIME&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "memes",
+                "top?period=ALL_TIME&limit=20"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Scout Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Predictions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/predictions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me",
+                "predictions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Scout Leaderboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/leaderboard?period=ALL_TIME&limit=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "leaderboard?period=ALL_TIME&limit=50"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Tournament",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/tournaments/daily",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "tournaments",
+                "daily"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Tournament Vote",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tournaments/matches/{{tournamentMatchId}}/votes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tournaments",
+                "matches",
+                "{{tournamentMatchId}}",
+                "votes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"selectedMemeId\": \"{{tournamentMemeId}}\"}"
+            }
+          }
+        },
+        {
+          "name": "Send Product Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/product-events",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "product-events"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"eventType\": \"BATTLE_OPENED\", \"occurredAt\": \"{{$isoTimestamp}}\", \"appVersion\": \"0.1.0\", \"platform\": \"ANDROID\"}"
+            }
+          }
+        },
+        {
+          "name": "Get Admin Analytics Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/analytics/summary?from=2026-01-01T00:00:00Z&to=2027-01-01T00:00:00Z",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "analytics",
+                "summary?from=2026-01-01T00:00:00Z&to=2027-01-01T00:00:00Z"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me",
+                "logout"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Verify revoked token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "\"pm.test(\\\"revoked\\\",()=>pm.response.code===401);\""
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL:?DATABASE_URL is required for prod profile}
+    username: ${DATABASE_USERNAME:?DATABASE_USERNAME is required for prod profile}
+    password: ${DATABASE_PASSWORD:?DATABASE_PASSWORD is required for prod profile}
+  flyway:
+    locations: classpath:db/migration
+  jpa:
+    hibernate:
+      ddl-auto: validate
+server:
+  forward-headers-strategy: ${SERVER_FORWARD_HEADERS_STRATEGY:none}
+springdoc:
+  swagger-ui:
+    enabled: ${SWAGGER_UI_ENABLED:false}
+  api-docs:
+    enabled: ${OPENAPI_ENABLED:false}
+media:
+  storage:
+    type: minio
+    minio:
+      endpoint: ${MINIO_ENDPOINT:?MINIO_ENDPOINT is required for prod profile}
+      access-key: ${MINIO_ACCESS_KEY:?MINIO_ACCESS_KEY is required for prod profile}
+      secret-key: ${MINIO_SECRET_KEY:?MINIO_SECRET_KEY is required for prod profile}
+      bucket: ${MINIO_BUCKET:?MINIO_BUCKET is required for prod profile}
+app:
+  admin-token: ${MEME_ARENA_ADMIN_TOKEN:?MEME_ARENA_ADMIN_TOKEN is required for prod profile}
+  ip-hash-pepper: ${APP_IP_HASH_PEPPER:?APP_IP_HASH_PEPPER is required for prod profile}
+  proxy:
+    trust-forwarded-headers: ${APP_TRUST_FORWARDED_HEADERS:false}
+  scout:
+    resolver:
+      enabled: true
+  tournament:
+    enabled: ${APP_TOURNAMENT_ENABLED:false}
