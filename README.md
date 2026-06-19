@@ -30,3 +30,24 @@ Physical image upload/storage and the Android/Flutter client are not implemented
 ## API docs
 
 OpenAPI is available from the running backend at `/v3/api-docs` and Swagger UI at `/swagger-ui.html`.
+
+## Media upload and local moderation (backend MVP)
+
+Use IntelliJ IDEA as the primary workflow:
+
+1. Open the shared run configuration **Meme Arena Infrastructure** to start PostgreSQL 17 and MinIO together from `docker-compose.yml`.
+2. Start **Meme Arena Backend** with the `local` profile. The backend reads MinIO settings from environment variables and creates the private `meme-images` bucket on startup if it is missing.
+3. Open Postman, select the Meme Arena environment, and run the collection requests.
+
+Manual Postman scenario:
+
+1. Run **Users / Create Guest User** and save `userId`.
+2. Run **Media / Upload Image**. In the multipart body, keep `userId` from the environment and choose a local JPEG, PNG, WebP, or GIF file in the `file` picker. The response saves `mediaAssetId` and returns a backend `contentUrl`, never a MinIO URL.
+3. Run **Memes / Create Meme** with `mediaAssetId` and without `imageUrl`. The new meme is `PENDING` and the response includes `contentUrl`.
+4. Run **Moderation / Get Pending Memes**.
+5. Run **Moderation / Approve Meme**.
+6. Run **Battles / Get Next Battle**.
+7. Run **Votes / Submit Vote**.
+8. Run **Ranking / Get Top Memes**.
+
+The command line is not required for the normal user path; it is only used by automation and CI.

@@ -1,0 +1,3 @@
+package ru.memearena.media.infrastructure;
+import org.springframework.context.annotation.Profile; import org.springframework.stereotype.Component; import ru.memearena.media.application.MediaStorage; import java.io.*; import java.util.concurrent.ConcurrentHashMap;
+@Profile("test") @Component public class InMemoryMediaStorage implements MediaStorage { private final ConcurrentHashMap<String,byte[]> data=new ConcurrentHashMap<>(); public void put(String key,InputStream in,long size,String ct){try{data.put(key,in.readAllBytes());}catch(IOException e){throw new UncheckedIOException(e);}} public InputStream get(String key){return new ByteArrayInputStream(data.getOrDefault(key,new byte[0]));} public void delete(String key){data.remove(key);} }
