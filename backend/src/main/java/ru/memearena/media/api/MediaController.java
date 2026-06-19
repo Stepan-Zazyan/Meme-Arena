@@ -34,7 +34,8 @@ public class MediaController {
     }
 
     @PostMapping(value = "/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<MediaUploadResponse> upload(@RequestParam UUID userId, @RequestPart MultipartFile file) {
+    public ResponseEntity<MediaUploadResponse> upload(@Deprecated @RequestParam(required=false) UUID userId, @RequestPart MultipartFile file) {
+        userId = ru.memearena.security.CurrentUser.required().userId();
         limits.check("upload-hour", userId.toString(), 10, 3600);
         limits.check("upload-day", userId.toString(), 30, 86400);
         var result = service.upload(userId, file);
