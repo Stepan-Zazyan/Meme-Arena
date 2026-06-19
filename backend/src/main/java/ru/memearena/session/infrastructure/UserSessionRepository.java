@@ -1,0 +1,2 @@
+package ru.memearena.session.infrastructure; import org.springframework.data.jpa.repository.*; import org.springframework.data.repository.query.Param; import ru.memearena.session.domain.UserSession; import java.time.Instant; import java.util.*;
+public interface UserSessionRepository extends JpaRepository<UserSession,UUID>{ Optional<UserSession> findByTokenHash(String tokenHash); @Modifying @Query("update UserSession s set s.revokedAt=:now where s.userId=:userId and s.revokedAt is null") int revokeActiveForUser(@Param("userId") UUID userId,@Param("now") Instant now); }

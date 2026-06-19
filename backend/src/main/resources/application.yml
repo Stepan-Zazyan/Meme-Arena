@@ -41,3 +41,8 @@ media:
       access-key: ${MINIO_ACCESS_KEY:minioadmin}
       secret-key: ${MINIO_SECRET_KEY:minioadmin}
       bucket: ${MINIO_BUCKET:meme-images}
+app:
+  admin-token: ${MEME_ARENA_ADMIN_TOKEN:}
+  ip-hash-pepper: ${APP_IP_HASH_PEPPER:local-dev-pepper-change-me}
+  proxy:
+    trust-forwarded-headers: false

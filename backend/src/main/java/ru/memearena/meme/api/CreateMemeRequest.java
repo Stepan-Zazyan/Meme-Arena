@@ -1,1 +1,1 @@
-package ru.memearena.meme.api; import jakarta.validation.constraints.*; import java.util.UUID; public record CreateMemeRequest(@NotNull UUID uploaderId,@NotBlank @Size(max=120) String title, UUID mediaAssetId, @Size(max=2000) String imageUrl,@Size(max=2000) String sourceUrl){}
+package ru.memearena.meme.api; import jakarta.validation.constraints.*; import java.util.UUID; public record CreateMemeRequest(@Deprecated UUID uploaderId,@NotBlank @Size(max=120) String title, UUID mediaAssetId, @Size(max=2000) String imageUrl,@Size(max=2000) String sourceUrl){}
