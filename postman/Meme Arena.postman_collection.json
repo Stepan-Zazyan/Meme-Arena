@@ -444,6 +444,126 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Media",
+      "item": [
+        {
+          "name": "Upload Image",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/media/images",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Created',()=>pm.response.to.have.status(201));",
+                  "const json=pm.response.json();",
+                  "pm.expect(json.contentUrl).to.exist;",
+                  "pm.expect(json.contentUrl).not.include('localhost:9000');",
+                  "pm.environment.set('mediaAssetId', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Image Content",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/media/{{mediaAssetId}}/content"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('OK',()=>pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Moderation",
+      "item": [
+        {
+          "name": "Get Pending Memes",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/local/moderation/memes?status=PENDING&page=0&size=20"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('OK',()=>pm.response.to.have.status(200));",
+                  "pm.expect(pm.response.json().items[0].moderationStatus).to.exist;"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Approve Meme",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/local/moderation/memes/{{memeId}}/approve"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('OK',()=>pm.response.to.have.status(200));",
+                  "pm.expect(pm.response.json().moderationStatus).eq('APPROVED');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reject Meme",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/local/moderation/memes/{{memeId}}/reject",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Not suitable for MVP\"\n}"
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,3 @@
+package ru.memearena.media.infrastructure;
+import org.springframework.data.jpa.repository.*; import org.springframework.data.repository.query.Param; import ru.memearena.media.domain.*; import java.time.Instant; import java.util.*;
+public interface MediaAssetRepository extends JpaRepository<MediaAsset,UUID>{ boolean existsBySha256AndStatusNot(String sha256,MediaAssetStatus status); @Query("select a from MediaAsset a where a.status = ru.memearena.media.domain.MediaAssetStatus.ACTIVE and a.createdAt < :cutoff and not exists (select 1 from Meme m where m.mediaAssetId=a.id)") List<MediaAsset> findUnattachedActiveOlderThan(@Param("cutoff") Instant cutoff); }
