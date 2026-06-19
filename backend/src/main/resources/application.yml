@@ -58,3 +58,10 @@ app:
     resolver:
       enabled: true
       fixed-delay: PT30M
+  tournament:
+    enabled: ${APP_TOURNAMENT_ENABLED:false}
+    time-zone: Europe/Moscow
+    participants: 16
+    minimum-participants: 8
+    minimum-meme-battles: 5
+    round-duration-hours: 6

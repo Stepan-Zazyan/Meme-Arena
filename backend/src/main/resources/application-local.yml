@@ -9,3 +9,5 @@ app:
   scout:
     resolver:
       enabled: false
+  tournament:
+    enabled: false

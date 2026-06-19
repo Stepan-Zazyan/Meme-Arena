@@ -1,0 +1,1 @@
+package ru.memearena.tournament.application; import org.springframework.boot.context.properties.ConfigurationProperties; @ConfigurationProperties("app.tournament") public record TournamentProperties(boolean enabled,String timeZone,int participants,int minimumParticipants,int minimumMemeBattles,int roundDurationHours){}
