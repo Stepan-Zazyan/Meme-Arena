@@ -2,7 +2,7 @@ spring:
   jpa:
     show-sql: false
   flyway:
-    locations: classpath:db/migration,classpath:db/migration/local
+    locations: classpath:db/migration
 app:
   scout:
     resolver:
